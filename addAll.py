@@ -82,3 +82,5 @@ for url in lst:
     scrape(url)
     counter = counter + 1
     print '%d' % counter
+
+WaitingArticle.objects.all().delete()
