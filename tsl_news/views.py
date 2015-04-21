@@ -29,7 +29,7 @@ def article(request, userID, articleID):
 # displays the JSON list for a section
 def section(request, sectionName):
     section = Section.objects.filter(name=sectionName)[:1]
-    article_list = Article.objects.filter(section=section)
+    article_list = Article.objects.filter(section=section).order_by('-pub_date')
 
     json_list = []
 
