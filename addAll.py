@@ -1,3 +1,4 @@
+# relevant imports
 from tsl_news.models import Section, Author, Article, WaitingArticle
 import requests
 import re
@@ -8,10 +9,11 @@ from lxml import html
 import datetime
 import json
 
-
+# takes in a URL and adds it to the database
 def scrape(url):
-    req = requests.get(url)
 
+    # get the HTML
+    req = requests.get(url)
     html = lxml.html.fromstring(req.text)
 
     # get article title
@@ -48,6 +50,7 @@ def scrape(url):
         else:
             article[idx] = ''
 
+    # remove paragraphs that are blank
     article = [x for x in article if x != '']
 
     # condense to string
@@ -71,6 +74,7 @@ def scrape(url):
 
     new_article.save()
 
+# get all links waiting to be added
 lst = []
 article_list = WaitingArticle.objects.all()
 for art in article_list:
@@ -78,9 +82,11 @@ for art in article_list:
 
 counter = 0
 
+# add all links to Article database
 for url in lst:
     scrape(url)
     counter = counter + 1
     print '%d' % counter
 
+# once added, delete all WaitingArticles
 WaitingArticle.objects.all().delete()

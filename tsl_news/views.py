@@ -1,3 +1,4 @@
+# relevant imports
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpResponsePermanentRedirect
@@ -6,12 +7,8 @@ from tsl_news.models import Section, Author, Article, WaitingArticle, User
 from tsl_news.forms import URLForm
 import json
 
-def index(request):
-    article_list = Article.objects.order_by('-pub_date')
-    context = {'article_list': article_list}
-    return render(request, 'tsl_news/index.html', context)
 
-
+# displays the JSON for an article
 def article(request, userID, articleID):
     user, created = User.objects.get_or_create(iphone_udid=userID)
     article = Article.objects.get(id=articleID)
@@ -28,6 +25,8 @@ def article(request, userID, articleID):
     fields = {'fields' : {'favorited' : favorited, 'headline' : article.headline, 'authors' : author_list, 'section' : article.section.name, 'pub_date' : pub_date, 'url' : article.url, 'article_body' : article.article_body }}
     return HttpResponse(json.dumps(fields), content_type='application/json')
 
+
+# displays the JSON list for a section
 def section(request, sectionName):
     section = Section.objects.filter(name=sectionName)[:1]
     article_list = Article.objects.filter(section=section)
@@ -44,6 +43,8 @@ def section(request, sectionName):
 
     return HttpResponse(json.dumps(json_list), content_type='application/json')
 
+
+# displays the JSON list of featured articles
 def featured(request):
     article_list = Article.objects.filter(is_featured=True)
 
@@ -60,6 +61,7 @@ def featured(request):
     return HttpResponse(json.dumps(json_list), content_type='application/json')
 
 
+# Displays JSON list of user favorites
 def user_favorite(request, userID):
 
     user = User.objects.filter(iphone_udid=userID)[:1]
@@ -79,6 +81,8 @@ def user_favorite(request, userID):
 
     return HttpResponse(json.dumps(json_list), content_type='application/json')
 
+
+# Adds a favorite for a user
 def add_favorite(request, userID, articleID):
     user, created = User.objects.get_or_create(iphone_udid=userID)
 
@@ -88,6 +92,8 @@ def add_favorite(request, userID, articleID):
     user.favorite_articles.add(art)
     return HttpResponse("Done")
 
+
+# Removes a favorite for a user
 def remove_favorite(request, userID, articleID):
     user, created = User.objects.get_or_create(iphone_udid=userID)
 
@@ -98,6 +104,8 @@ def remove_favorite(request, userID, articleID):
     user.save()
     return HttpResponse("Done")
 
+
+# Adds an article to the database
 def add_article_url(request):
     if request.method == 'GET':
         return render(request, 'tsl_news/add_article.html', {})

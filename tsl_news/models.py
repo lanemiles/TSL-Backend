@@ -1,18 +1,9 @@
-from django.db import models
-
-# Create your models here.
-from django.db import models
-
-# Create your models here.
-
+# relevant imports
 from django.db import models
 from django.utils import timezone
 
-# Create your models here.
 
-
-# we want article and author and category
-
+# Section class that matches the TSL's section
 class Section(models.Model):
     name = models.CharField(max_length=100, default="No section yet")
 
@@ -20,6 +11,7 @@ class Section(models.Model):
         return self.name
 
 
+# Author class
 class Author(models.Model):
     name = models.CharField(max_length=25, default="No author yet")
 
@@ -27,6 +19,7 @@ class Author(models.Model):
         return self.name
 
 
+# Article class that matches with Authors and Section via foreign keys
 class Article(models.Model):
     authors = models.ManyToManyField(Author)
     pub_date = models.DateField('date published', default=timezone.now())
@@ -40,6 +33,7 @@ class Article(models.Model):
         return self.headline
 
 
+# WaitingArticle class is populated by the web form
 class WaitingArticle(models.Model):
     url = models.CharField(max_length=512)
 
@@ -47,10 +41,10 @@ class WaitingArticle(models.Model):
         return self.url
 
 
+# User class keeps track of who has favorited what
 class User(models.Model):
     iphone_udid = models.CharField(max_length=256)
     favorite_articles = models.ManyToManyField(Article)
 
     def __unicode__(self):
         return self.iphone_udid
-
