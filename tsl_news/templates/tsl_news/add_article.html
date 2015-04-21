@@ -1,0 +1,6 @@
+<form action="/addArticle/" method="post">
+  {% csrf_token %}
+  <label for="url"></label>
+  <input type="text" name="url" id="url" />
+  <input type="submit" />
+</form>
