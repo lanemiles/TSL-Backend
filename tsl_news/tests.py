@@ -1,3 +1,7 @@
 from django.test import TestCase
 
-# Create your tests here.
+from tsl_news.models import Section, Author, Article, WaitingArticle, User
+
+
+def article_has_author():
+    article_list = Article.objects.all()
