@@ -22,7 +22,8 @@ def article(request, userID, articleID):
     for auth in article.authors.all():
         author_list.append(auth.name)
     pub_date = article.pub_date.strftime("%B %d, %Y")
-    fields = {'fields' : {'favorited' : favorited, 'headline' : article.headline, 'authors' : author_list, 'section' : article.section.name, 'pub_date' : pub_date, 'url' : article.url, 'article_body' : article.article_body }}
+    section_name = json.dumps(article.section.name)
+    fields = {'fields' : {'favorited' : favorited, 'headline' : article.headline, 'authors' : author_list, 'section' : section_name, 'pub_date' : pub_date, 'url' : article.url, 'article_body' : article.article_body }}
     return HttpResponse(json.dumps(fields), content_type='application/json')
 
 
@@ -38,7 +39,8 @@ def section(request, sectionName):
         for auth in article.authors.all():
             author_list.append(auth.name)
         pub_date = article.pub_date.strftime("%B %d, %Y")
-        fields = {'fields' : {'headline' : article.headline, 'authors' : author_list, 'section' : article.section.name, 'pub_date' : pub_date, 'id' : article.id }}
+        section_name = json.dumps(article.section.name)
+        fields = {'fields' : {'headline' : article.headline, 'authors' : author_list, 'section' : section_name, 'pub_date' : pub_date, 'id' : article.id }}
         json_list.append(fields)
 
     return HttpResponse(json.dumps(json_list), content_type='application/json')
@@ -55,7 +57,8 @@ def featured(request):
         for auth in article.authors.all():
             author_list.append(auth.name)
         pub_date = article.pub_date.strftime("%B %d, %Y")
-        fields = {'fields' : {'headline' : article.headline, 'authors' : author_list, 'section' : article.section.name, 'pub_date' : pub_date, 'id' : article.id }}
+        section_name = json.dumps(article.section.name)
+        fields = {'fields' : {'headline' : article.headline, 'authors' : author_list, 'section' : section_name, 'pub_date' : pub_date, 'id' : article.id }}
         json_list.append(fields)
 
     return HttpResponse(json.dumps(json_list), content_type='application/json')
@@ -76,7 +79,8 @@ def user_favorite(request, userID):
         for auth in article.authors.all():
             author_list.append(auth.name)
         pub_date = article.pub_date.strftime("%B %d, %Y")
-        fields = {'fields' : {'headline' : article.headline, 'authors' : author_list, 'section' : article.section.name, 'pub_date' : pub_date, 'id' : article.id }}
+        section_name = json.dumps(article.section.name)
+        fields = {'fields' : {'headline' : article.headline, 'authors' : author_list, 'section' : section_name, 'pub_date' : pub_date, 'id' : article.id }}
         json_list.append(fields)
 
     return HttpResponse(json.dumps(json_list), content_type='application/json')
