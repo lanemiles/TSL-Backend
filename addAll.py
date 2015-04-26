@@ -47,6 +47,9 @@ def scrape(url):
     for idx, val in enumerate(article):
         if not val.text_content().isspace():
             article[idx] = val.text_content().replace('\r', '').replace('\n', ' ')
+            if "\r" in val:
+                print "Found carriage return after replace"
+                
         else:
             article[idx] = ''
 
