@@ -65,6 +65,28 @@ def featured(request):
     return HttpResponse(json.dumps(json_list), content_type='application/json')
 
 
+# Displays JSON list of user favorites
+def user_favorite(request, userID):
+
+    user = User.objects.filter(iphone_udid=userID)[:1]
+    user = list(user[:1])
+    user = user[0]
+    article_list = user.favorite_articles.all()
+
+    json_list = []
+
+    for article in article_list:
+        author_list = []
+        for auth in article.authors.all():
+            author_list.append(auth.name)
+        pub_date = article.pub_date.strftime("%B %d, %Y")
+        section_name = json.dumps(article.section.name)
+        fields = {'fields' : {'headline' : article.headline, 'authors' : author_list, 'section' : section_name, 'pub_date' : pub_date, 'id' : article.id }}
+        json_list.append(fields)
+
+    return HttpResponse(json.dumps(json_list), content_type='application/json')
+
+
 # Adds a favorite for a user
 def add_favorite(request, userID, articleID):
     user, created = User.objects.get_or_create(iphone_udid=userID)
