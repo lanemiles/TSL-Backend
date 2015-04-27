@@ -49,7 +49,7 @@ def section(request, sectionName):
 
 # displays the JSON list of featured articles
 def featured(request):
-    article_list = Article.objects.filter(is_featured=True)
+    article_list = Article.objects.filter(is_featured=True).order_by('-pub_date')
 
     json_list = []
 
