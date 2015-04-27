@@ -31,7 +31,7 @@ class ArticleTests(TestCase):
 
         new_article.authors.add(auth)
         new_article.article_body = "This is a test article.\n\nThat has a second paragraph."
-        new_article.url = "http://www.tsl.pomona.edu/"
+        new_article.url = "http://tsl.pomona.edu/"
         new_article.is_featured = True;
 
         # save so far
@@ -78,7 +78,7 @@ class ArticleTests(TestCase):
         self.assertContains(req, 'Some test article', status_code=200)
 
     # make sure the sections appear correctly
-    def test_getting_featured_articles(self):
+    def test_getting_sections(self):
         client = Client()
         req = client.get(reverse('section_list', kwargs={'sectionName': 'News'}))
         # check for JSON of favorite
@@ -132,6 +132,25 @@ class ArticleTests(TestCase):
         self.assertEqual(wait_count, 0)
 
         # article is in database
-        art = Article.objects.get(id=2)
-        art.url = 'http://tsl.pomona.edu/articles/2015/4/24/news/6415-chaplaincy-budget-discussions-arise-during-committee-review'
+        article, did_create = Article.objects.get_or_create(url='http://tsl.pomona.edu/articles/2015/4/24/news/6415-chaplaincy-budget-discussions-arise-during-committee-review')
+        self.assertEqual(did_create, False)
+
+    # adding the same URL should not add a duplicate
+    def test_adding_duplicate_url_should_not_make_duplicate(self):
+        client = Client()
+
+        # add then add again and we should have the same count
+        resp = self.client.post(reverse('add_article_form'), {'url' : 'http://tsl.pomona.edu/articles/2015/4/24/news/6409-city-of-claremont-and-5c-students-join-forces-for-energy-prize'})
+        self.assertEqual(resp.status_code, 301)
+
+        # get article count before re adding
+        article_count = len(list(Article.objects.all()))
+
+        # add same one
+        resp = self.client.post(reverse('add_article_form'), {'url' : 'http://tsl.pomona.edu/articles/2015/4/24/news/6409-city-of-claremont-and-5c-students-join-forces-for-energy-prize'})
+        self.assertEqual(resp.status_code, 301)
+
+        # count should be the same
+        article_count_after = len(list(Article.objects.all()))
+        self.assertEqual(article_count_after, article_count)
 
