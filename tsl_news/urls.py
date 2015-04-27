@@ -5,7 +5,7 @@ from tsl_news import views
 
 # pattern matching the URLs
 urlpatterns = [
-    url(r'^articles/(?P<userID>[-\w]+)/(?P<articleID>\d+)', views.article),
+    url(r'^articles/(?P<userID>[-\w]+)/(?P<articleID>\d+)', views.article, name='article_view'),
     url(r'^sections/(?P<sectionName>.+)$', views.section),
     url(r'^addArticle/$', views.add_article_url),
     url(r'^featured/$', views.featured),
