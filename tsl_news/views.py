@@ -6,6 +6,7 @@ from django.core.serializers.json import Serializer
 from tsl_news.models import Section, Author, Article, WaitingArticle, User
 from tsl_news.forms import URLForm
 import json
+import addAll
 
 
 # displays the JSON for an article
@@ -121,4 +122,13 @@ def add_article_url(request):
         if form.is_valid():
             content = form.cleaned_data['url']
             post = WaitingArticle.objects.create(url=content)
+            addAll.addWaitingArticlesToDB()
             return HttpResponsePermanentRedirect("/addArticle/")
+
+
+
+
+
+
+
+
