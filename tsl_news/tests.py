@@ -135,6 +135,39 @@ class ArticleTests(TestCase):
         article, did_create = Article.objects.get_or_create(url='http://tsl.pomona.edu/articles/2015/4/24/news/6415-chaplaincy-budget-discussions-arise-during-committee-review')
         self.assertEqual(did_create, False)
 
+    # test that adding article adds fields correctly
+    def test_verifying_added_article_information(self):
+        client = Client()
+
+         # add one
+        resp = self.client.post(reverse('add_article_form'), {'url' : 'http://tsl.pomona.edu/articles/2015/4/24/news/6415-chaplaincy-budget-discussions-arise-during-committee-review'})
+        self.assertEqual(resp.status_code, 301)
+
+        # make sure data in database is correct
+
+        # get article from database
+        article = Article.objects.get(url='http://tsl.pomona.edu/articles/2015/4/24/news/6415-chaplaincy-budget-discussions-arise-during-committee-review')
+
+        # verify authors
+        auth = article.authors.all()
+        auth_list = []
+        for author in auth:
+            auth_list.append(author.name)
+        self.assertEqual(auth_list, ["Kevin Tidmarsh"])
+        # headline
+        self.assertEqual(article.headline, 'Chaplaincy Budget Discussions Arise During Committee Review')
+        # date
+        self.assertEqual(article.pub_date.strftime("%B %d, %Y"), 'April 24, 2015')
+        # section
+        self.assertEqual(article.section.name, 'News')
+        # and body is all paragraphs separated by '\n\n'
+        if "\r" in article.article_body:
+            self.assertEqual(True, False)
+        if "\n\n\n" in article.article_body:
+            self.assertEqual(True, False)
+        if " \n " in article.article_body:
+            self.assertEqual(True, False)
+
     # adding the same URL should not add a duplicate
     def test_adding_duplicate_url_should_not_make_duplicate(self):
         client = Client()
